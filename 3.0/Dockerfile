@@ -63,7 +63,9 @@ RUN log () { echo -e "\033[01;95m$@\033[0m"; } && \
 	apk del .fetch-deps .build-deps
 
 # Adjust the default schema-registry properties to connect to Zookeeper at zookeeper:2181
-RUN sed -i 's/kafkastore.connection.url=.*/kafkastore.connection.url=zookeeper:2181/g' $SCHEMA_REGISTRY_HOME/etc/schema-registry/schema-registry.properties
+ENV ZOOKEEPER_HOST=zookeeper \
+    ZOOKEEPER_PORT=2181
+RUN sed -i "s/kafkastore.connection.url=.*/kafkastore.connection.url=$ZOOKEEPER_HOST:$ZOOKEEPER_PORT/g" $SCHEMA_REGISTRY_HOME/etc/schema-registry/schema-registry.properties
 
 WORKDIR $SCHEMA_REGISTRY_HOME
 
