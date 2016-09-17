@@ -64,10 +64,12 @@ RUN log () { echo -e "\033[01;95m$@\033[0m"; } && \
 
 # Adjust the default schema-registry properties to connect to Zookeeper at zookeeper:2181
 ENV ZOOKEEPER_HOST=zookeeper \
-    ZOOKEEPER_PORT=2181
+    ZOOKEEPER_PORT=2181 \
+    KAFKA_HOST=kafka \
+    KAFKA_PORT=9092
 RUN sed -i "s/kafkastore.connection.url=.*/kafkastore.connection.url=$ZOOKEEPER_HOST:$ZOOKEEPER_PORT/g" $SCHEMA_REGISTRY_HOME/etc/schema-registry/schema-registry.properties
 
-# Add wait-for-it script, for use in waiting for Zookeeper
+# Add wait-for-it script, for use in waiting for Zookeeper and Kafka
 ADD https://raw.githubusercontent.com/ucalgary/wait-for-it/master/wait-for-it.sh /usr/local/bin/wait-for-it
 RUN chmod 755 /usr/local/bin/wait-for-it
 
