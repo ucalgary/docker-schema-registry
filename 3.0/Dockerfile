@@ -80,6 +80,6 @@ WORKDIR $SCHEMA_REGISTRY_HOME
 
 ENV PATH=$PATH:$SCHEMA_REGISTRY_HOME/bin
 
-EXPOSE 9092
+EXPOSE 8081
 
 CMD ["schema-registry-docker-start", "/schema-registry/etc/schema-registry/schema-registry.properties"]
