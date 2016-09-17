@@ -67,10 +67,14 @@ ENV ZOOKEEPER_HOST=zookeeper \
     ZOOKEEPER_PORT=2181
 RUN sed -i "s/kafkastore.connection.url=.*/kafkastore.connection.url=$ZOOKEEPER_HOST:$ZOOKEEPER_PORT/g" $SCHEMA_REGISTRY_HOME/etc/schema-registry/schema-registry.properties
 
+# Add wait-for-it script, for use in waiting for Zookeeper
+ADD https://raw.githubusercontent.com/ucalgary/wait-for-it/master/wait-for-it.sh /usr/local/bin/wait-for-it
+RUN chmod 755 /usr/local/bin/wait-for-it
+
 WORKDIR $SCHEMA_REGISTRY_HOME
 
 ENV PATH=$PATH:$SCHEMA_REGISTRY_HOME/bin
 
 EXPOSE 9092
 
-CMD ["schema-registry-start", "/schema-registry/etc/schema-registry/schema-registry.properties"]
+CMD wait-for-it -h $ZOOKEEPER_HOST -p $ZOOKEEPER_PORT -s -t 30 -- schema-registry-start /schema-registry/etc/schema-registry/schema-registry.properties
