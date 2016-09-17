@@ -73,10 +73,13 @@ RUN sed -i "s/kafkastore.connection.url=.*/kafkastore.connection.url=$ZOOKEEPER_
 ADD https://raw.githubusercontent.com/ucalgary/wait-for-it/master/wait-for-it.sh /usr/local/bin/wait-for-it
 RUN chmod 755 /usr/local/bin/wait-for-it
 
+# Copy custom schema-registry-start script
+COPY bin/schema-registry-docker-start $SCHEMA_REGISTRY_HOME/bin/schema-registry-docker-start
+
 WORKDIR $SCHEMA_REGISTRY_HOME
 
 ENV PATH=$PATH:$SCHEMA_REGISTRY_HOME/bin
 
 EXPOSE 9092
 
-CMD wait-for-it -h $ZOOKEEPER_HOST -p $ZOOKEEPER_PORT -s -t 30 -- schema-registry-start /schema-registry/etc/schema-registry/schema-registry.properties
+CMD ["schema-registry-docker-start", "/schema-registry/etc/schema-registry/schema-registry.properties"]

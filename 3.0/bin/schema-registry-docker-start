@@ -1,0 +1,6 @@
+#!/bin/sh
+
+wait-for-it -h $ZOOKEEPER_HOST -p $ZOOKEEPER_PORT -t 30
+wait-for-it -h $KAFKA_HOST -p $KAFKA_PORT -t 30
+
+exec $(dirname $0)/schema-registry-run-class io.confluent.kafka.schemaregistry.rest.SchemaRegistryMain "$@"
