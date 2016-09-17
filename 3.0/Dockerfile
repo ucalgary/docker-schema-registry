@@ -54,9 +54,9 @@ RUN log () { echo -e "\033[01;95m$@\033[0m"; } && \
 	$BUILD_DIR/apache-maven-$MAVEN_VERSION/bin/mvn $MAVEN_OPTIONS --file=$BUILD_DIR/common-common-$COMMON_VERSION/pom.xml package && \
 
 	log "Install the build packages" && \
-	cp -r $BUILD_DIR/schema-registry-$SCHEMA_REGISTRY_VERSION/package-schema-registry/target/kafka-schema-registry-package-$SCHEMA_REGISTRY_VERSION-package /schema-registry && \
-	rsync -a $BUILD_DIR/rest-utils-$REST_UTILS_VERSION/package/target/rest-utils-package-$REST_UTILS_VERSION-package/ /schema-registry && \
-	rsync -a $BUILD_DIR/common-common-$COMMON_VERSION/package/target/common-package-$COMMON_VERSION-SNAPSHOT-package/ /schema-registry && \
+	cp -r $BUILD_DIR/schema-registry-$SCHEMA_REGISTRY_VERSION/package-schema-registry/target/kafka-schema-registry-package-$SCHEMA_REGISTRY_VERSION-package $SCHEMA_REGISTRY_HOME && \
+	rsync -a $BUILD_DIR/rest-utils-$REST_UTILS_VERSION/package/target/rest-utils-package-$REST_UTILS_VERSION-package/ $SCHEMA_REGISTRY_HOME && \
+	rsync -a $BUILD_DIR/common-common-$COMMON_VERSION/package/target/common-package-$COMMON_VERSION-SNAPSHOT-package/ $SCHEMA_REGISTRY_HOME && \
 
 	log "Clean up" && \
 	rm -r "$BUILD_DIR" && \
