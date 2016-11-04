@@ -9,7 +9,7 @@ variables:
   SCHEMA_REGISTRY_VERSION_PATCH: '1'
 
 before_script:
-  - docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN docker.ucalgary.ca
+  - docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN $CI_REGISTRY
 
 build:
   stage: build
