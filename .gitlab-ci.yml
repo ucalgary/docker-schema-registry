@@ -9,13 +9,13 @@ variables:
   SCHEMA_REGISTRY_VERSION_PATCH: '1'
 
 before_script:
-  - docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN $CI_REGISTRY
+  - if [ -n "${CI_BUILD_TOKEN}" ]; then docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN $CI_REGISTRY; fi
 
 build:
   stage: build
   script:
     - docker build --pull -t $CI_REGISTRY_IMAGE:$CI_BUILD_REF_NAME $SCHEMA_REGISTRY_VERSION_MAJOR.$SCHEMA_REGISTRY_VERSION_MINOR
-    - docker push $CI_REGISTRY_IMAGE:$CI_BUILD_REF_NAME
+    - if [ -n "${CI_BUILD_TOKEN}" ]; then docker push $CI_REGISTRY_IMAGE:$CI_BUILD_REF_NAME; fi
 
 release:
   stage: release
