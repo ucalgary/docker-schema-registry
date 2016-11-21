@@ -1,4 +1,4 @@
-FROM openjdk:8u92-jre-alpine
+FROM openjdk:8u111-jre-alpine
 
 MAINTAINER King Chung Huang <kchuang@ucalgary.ca>
 
