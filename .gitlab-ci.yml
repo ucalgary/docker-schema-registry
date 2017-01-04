@@ -1,37 +1,28 @@
+image: docker.ucalgary.ca/rms-utils/rms-ci:latest
+
 stages:
   - build
-  - release
 
 variables:
-  SCHEMA_REGISTRY_VERSION: '3.1.1'
-  SCHEMA_REGISTRY_VERSION_MAJOR: '3'
-  SCHEMA_REGISTRY_VERSION_MINOR: '1'
-  SCHEMA_REGISTRY_VERSION_PATCH: '1'
+  BUILD_CONTEXT_PATH: '3'
+  IMAGE_TAG: $CI_BUILD_REF_NAME
 
 before_script:
-  - if [ -n "${CI_BUILD_TOKEN}" ]; then docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN $CI_REGISTRY; fi
+  - &ci_registry_image_default
+    if [ -z ${CI_REGISTRY_IMAGE+x} ]; then
+      export CI_REGISTRY_IMAGE=`basename $CI_BUILD_REPO`; fi
 
-Build Image:
+Build Image: &build_image
   stage: build
+  before_script:
+    - *ci_registry_image_default
+    - if [ -n "${CI_BUILD_TOKEN}" ]; then 
+        docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN $CI_REGISTRY; fi
   script:
-    - if [ -z ${CI_REGISTRY_IMAGE+x} ]; then export CI_REGISTRY_IMAGE=`basename $CI_BUILD_REPO`; fi
-    - docker build --pull -t $CI_REGISTRY_IMAGE:$CI_BUILD_REF_NAME $SCHEMA_REGISTRY_VERSION_MAJOR
-    - if [ -n "${CI_BUILD_TOKEN}" ]; then docker push $CI_REGISTRY_IMAGE:$CI_BUILD_REF_NAME; fi
-
-Relase Image:
-  stage: release
-  variables:
-    GIT_STRATEGY: none
-  script:
-    - docker pull $CI_REGISTRY_IMAGE:$CI_BUILD_REF_NAME
-    - docker tag $CI_REGISTRY_IMAGE:$CI_BUILD_REF_NAME $CI_REGISTRY_IMAGE:$SCHEMA_REGISTRY_VERSION_MAJOR.$SCHEMA_REGISTRY_VERSION_MINOR.$SCHEMA_REGISTRY_VERSION_PATCH
-    - docker tag $CI_REGISTRY_IMAGE:$CI_BUILD_REF_NAME $CI_REGISTRY_IMAGE:$SCHEMA_REGISTRY_VERSION_MAJOR.$SCHEMA_REGISTRY_VERSION_MINOR
-    - docker tag $CI_REGISTRY_IMAGE:$CI_BUILD_REF_NAME $CI_REGISTRY_IMAGE:$SCHEMA_REGISTRY_VERSION_MAJOR
-    - docker tag $CI_REGISTRY_IMAGE:$CI_BUILD_REF_NAME $CI_REGISTRY_IMAGE:latest
-    - docker push $CI_REGISTRY_IMAGE:$SCHEMA_REGISTRY_VERSION_MAJOR.$SCHEMA_REGISTRY_VERSION_MINOR.$SCHEMA_REGISTRY_VERSION_PATCH
-    - docker push $CI_REGISTRY_IMAGE:$SCHEMA_REGISTRY_VERSION_MAJOR.$SCHEMA_REGISTRY_VERSION_MINOR
-    - docker push $CI_REGISTRY_IMAGE:$SCHEMA_REGISTRY_VERSION_MAJOR
-    - docker push $CI_REGISTRY_IMAGE:latest
-  only:
-    - tags
-    - triggers
+    - docker build
+        --pull
+        --tag $CI_REGISTRY_IMAGE:$IMAGE_TAG
+        $BUILD_CONTEXT_PATH
+  after_script:
+    - if [ -n "${CI_BUILD_TOKEN}" ]; then
+        docker push $CI_REGISTRY_IMAGE:$IMAGE_TAG; fi
