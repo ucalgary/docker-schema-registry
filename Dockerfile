@@ -1,7 +1,5 @@
 FROM openjdk:8u111-jre-alpine
 
-MAINTAINER King Chung Huang <kchuang@ucalgary.ca>
-
 ENV MAVEN_MAJOR=3 \
     MAVEN_VERSION=3.3.9 \
     SCHEMA_REGISTRY_VERSION=3.1.1 \
@@ -83,3 +81,5 @@ ENV PATH=$PATH:$SCHEMA_REGISTRY_HOME/bin
 EXPOSE 8081
 
 CMD ["schema-registry-docker-start", "/schema-registry/etc/schema-registry/schema-registry.properties"]
+
+LABEL maintainer="King Chung Huang <kchuang@ucalgary.ca>"
