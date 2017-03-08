@@ -1,4 +1,4 @@
-FROM openjdk:8u111-jre-alpine
+FROM openjdk:8u121-jre-alpine
 
 ENV MAVEN_MAJOR=3 \
     MAVEN_VERSION=3.3.9 \
