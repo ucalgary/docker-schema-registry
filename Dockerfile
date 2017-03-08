@@ -1,4 +1,4 @@
-FROM openjdk:8u111-jre-alpine
+FROM openjdk:8u121-jre-alpine
 
 ENV MAVEN_MAJOR=3 \
     MAVEN_VERSION=3.3.9 \
@@ -18,7 +18,7 @@ RUN log () { echo -e "\033[01;95m$@\033[0m"; } && \
 
 	apk add --no-cache --virtual .fetch-deps \
 		ca-certificates \
-		openssl \
+		libressl \
 		tar && \
 
 	apk add --no-cache --virtual .build-deps \
