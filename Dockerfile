@@ -18,7 +18,7 @@ RUN log () { echo -e "\033[01;95m$@\033[0m"; } && \
 
 	apk add --no-cache --virtual .fetch-deps \
 		ca-certificates \
-		openssl \
+		libressl \
 		tar && \
 
 	apk add --no-cache --virtual .build-deps \
